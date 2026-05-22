@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Docker Assignment 1 – Spring Boot Application with Docker
 
 ## Project Overview
@@ -53,3 +54,6 @@ demo/
 ├── docker-compose.yml
 ├── pom.xml
 └── README.md
+=======
+# springboot-docker-app
+>>>>>>> 07544c226b6b559312876ba0048bc75da8eda42b
