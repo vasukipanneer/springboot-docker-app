@@ -1,59 +1,58 @@
-<<<<<<< HEAD
-# Docker Assignment 1 – Spring Boot Application with Docker
+# Docker Assignment – Spring Boot + PostgreSQL
 
 ## Project Overview
+This project demonstrates a Spring Boot application running with PostgreSQL using Docker and Docker Compose. It includes multi-stage build, networking, volumes, and security practices.
 
-This project demonstrates how to containerize a Java Spring Boot application using Docker and Docker Compose.
+---
 
-The application is built using:
-- Java 17
+## Technologies Used
+- Java
 - Spring Boot
 - PostgreSQL
 - Docker
 - Docker Compose
 
-The project includes:
-- Dockerfile
-- Docker Compose configuration
-- PostgreSQL database integration
-- Docker Hub image deployment
-
 ---
 
-# Technologies Used
+## Dockerfile (Multi-Stage Build)
 
-- Java 17
-- Spring Boot 3.2.5
-- Maven
-- PostgreSQL
-- Docker
-- Docker Compose
+```dockerfile
+FROM maven:3.9.6-eclipse-temurin-22 AS build
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
----
+FROM eclipse-temurin:22-jre-alpine
+WORKDIR /app
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+COPY --from=build /app/target/dockerApp.jar app.jar
+USER appuser
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","app.jar"]
 
-# Prerequisites
 
-Before running this project, install:
 
-- Docker 20.10 or later
-- Docker Compose 1.29 or later
-- Java 17
-- Maven
-- Git
+Run Project
+docker compose up --build
 
----
+Docker Network
+docker network create my-app-network
 
-# Project Structure
+Volumes
+docker volume create postgres-data
 
-```text
-demo/
-│
-├── src/
-├── target/
-├── Dockerfile
-├── docker-compose.yml
-├── pom.xml
-└── README.md
-=======
-# springboot-docker-app
->>>>>>> 07544c226b6b559312876ba0048bc75da8eda42b
+Backup Volume
+docker run --rm -v postgres-data:/source -v %cd%:/backup alpine tar czf /backup/backup.tar.gz -C /source .
+
+Security Features
+Non-root user used
+Least privilege container
+Image scanning supported
+Docker Bench security audit used
+
+Docker Bench Security
+docker run --rm --privileged docker/docker-bench-security
+
+Conclusion
+This project shows how to containerize a Spring Boot application with PostgreSQL using Docker with security and best practices.
